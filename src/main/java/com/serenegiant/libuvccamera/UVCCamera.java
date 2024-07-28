@@ -754,10 +754,10 @@ public class UVCCamera {
     /**
      * set frame callback
      *
-     * @param callback
      * @param pixelFormat
+     * @param callback
      */
-    public void setFrameCallback(final IFrameCallback callback, final int pixelFormat) {
+    public void setFrameCallback(final int pixelFormat, final IFrameCallback callback) {
         if (!isLoaded) return;
         if (mNativePtr != 0) {
             nativeSetFrameCallback(mNativePtr, callback, pixelFormat);
@@ -782,7 +782,7 @@ public class UVCCamera {
      */
     public synchronized void stopPreview() {
         if (!isLoaded) return;
-        setFrameCallback(null, 0);
+        setFrameCallback(0, null);
         if (mCtrlBlock != null) {
             nativeStopPreview(mNativePtr);
             Log.i(TAG, "stopPreview");
