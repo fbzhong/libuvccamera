@@ -7,6 +7,8 @@ ANDROID_NDK_ROOT=/Users/fbzhong/Library/Android/sdk/ndk/27.0.12077973/
 # clean.
 rm -rf src/main/obj
 
+if [ "$SKIP_JPEG" != "1" ]; then
+
 # build libjpeg-turbo
 JPEG_TURBO_SRC=src/main/jni/libjpeg-turbo
 
@@ -44,6 +46,8 @@ for ABI in "${ABIS[@]}"; do
 done
 
 popd
+
+fi
 
 # build jni libs.
 pushd src/main/jni

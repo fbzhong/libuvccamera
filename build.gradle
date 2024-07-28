@@ -37,9 +37,12 @@ android {
         /*cmake {
             path "src/main/jni/libjpeg-turbo/CMakeLists.txt"
         }*/
-        ndkBuild {
-            path "src/main/jni/Android.mk"
-        }
+
+        // uncomment below line if you want to build in android studio.
+        // otherwise, you can build the libs using build.sh.
+        // ndkBuild {
+        //    path "src/main/jni/Android.mk"
+        // }
     }
 
     buildTypes {
