@@ -22,6 +22,8 @@
  * Files in the jni/libjpeg, jni/libusb, jin/libuvc, jni/rapidjson folder may have a different license, see the respective files.
 */
 
+#include <cinttypes>
+
 #define LOG_TAG "UVCCamera"
 #if 1	// When debugging information is not output
 	#ifndef LOG_NDEBUG
@@ -729,10 +731,10 @@ int UVCCamera::internalSetCtrlValue(control_value_t &values, uint8_t value1, uin
 		uint8_t v2max = (uint8_t)(values.max & 0xff);
 		value1 = value1 < v1min
 			? v1min
-			: (value1 > v1max ? v1max : value1); 
+			: (value1 > v1max ? v1max : value1);
 		value2 = value2 < v2min
 			? v2min
-			: (value2 > v2max ? v2max : value2); 
+			: (value2 > v2max ? v2max : value2);
 		set_func(mDeviceHandle, value1, value2);
 	}
 	RETURN(ret, int);
@@ -767,10 +769,10 @@ int UVCCamera::internalSetCtrlValue(control_value_t &values, int8_t value1, uint
 		uint8_t v2max = (uint8_t)(values.max & 0xff);
 		value1 = value1 < v1min
 			? v1min
-			: (value1 > v1max ? v1max : value1); 
+			: (value1 > v1max ? v1max : value1);
 		value2 = value2 < v2min
 			? v2min
-			: (value2 > v2max ? v2max : value2); 
+			: (value2 > v2max ? v2max : value2);
 		set_func(mDeviceHandle, value1, value2);
 	}
 	RETURN(ret, int);
@@ -788,13 +790,13 @@ int UVCCamera::internalSetCtrlValue(control_value_t &values, int8_t value1, uint
 		uint8_t v3max = (uint8_t)(values.max & 0xff);
 		value1 = value1 < v1min
 			? v1min
-			: (value1 > v1max ? v1max : value1); 
+			: (value1 > v1max ? v1max : value1);
 		value2 = value2 < v2min
 			? v2min
-			: (value2 > v2max ? v2max : value2); 
+			: (value2 > v2max ? v2max : value2);
 		value3 = value3 < v3min
 			? v3min
-			: (value3 > v3max ? v3max : value3); 
+			: (value3 > v3max ? v3max : value3);
 		set_func(mDeviceHandle, value1, value2, value3);
 	}
 	RETURN(ret, int);
@@ -1424,7 +1426,7 @@ int UVCCamera::getPanRel() {
 	// FIXME not implemented yet
 	RETURN(UVC_ERROR_ACCESS, int);
 }
-	
+
 //======================================================================
 int UVCCamera::updateTiltRelLimit(int &min, int &max, int &def) {
 	ENTER();
@@ -1443,7 +1445,7 @@ int UVCCamera::getTiltRel() {
 	// FIXME not implemented yet
 	RETURN(UVC_ERROR_ACCESS, int);
 }
-	
+
 //======================================================================
 int UVCCamera::updateRollRelLimit(int &min, int &max, int &def) {
 	ENTER();
@@ -1598,7 +1600,7 @@ int UVCCamera::updateBrightnessLimit(int &min, int &max, int &def) {
 int UVCCamera::setBrightness(int brightness) {
 	ENTER();
 	int ret = UVC_ERROR_IO;
-    LOGI("mPUSupports: %llu", mPUSupports);
+    LOGI("mPUSupports: %" PRIu64, mPUSupports);
 	if (mPUSupports & PU_BRIGHTNESS) {
 		ret = internalSetCtrlValue(mBrightness, brightness, uvc_get_brightness, uvc_set_brightness);
         LOGI("setBrightness. brightness: %d, ret: %d", brightness, ret);

@@ -31,3 +31,4 @@ src/main/jni/libjpeg-turbo/simd/arm/neon-compat.h
 src/main/jni/libjpeg-turbo/simd/cmake_install.cmake
 src/main/jni/libjpeg-turbo/tjbenchtest
 src/main/jni/libjpeg-turbo/tjexampletest
+.vscode

@@ -17,7 +17,9 @@ ABIS=("armeabi-v7a" "arm64-v8a" "x86" "x86_64")
 for ABI in "${ABIS[@]}"; do
     echo "Building for $ABI..."
 
-    rm -rf CMakeFiles
+    # Clean up the previous build
+    rm -rf CMakeCache.txt CMakeFiles
+
     cmake \
         -DCMAKE_TOOLCHAIN_FILE=$ANDROID_NDK_ROOT/build/cmake/android.toolchain.cmake \
         -DANDROID_NDK=$ANDROID_NDK_ROOT \

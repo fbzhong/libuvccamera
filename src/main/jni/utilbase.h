@@ -62,17 +62,17 @@
 
 #if defined(USE_LOGALL) && defined(__ANDROID__) && !defined(LOG_NDEBUG)
 	#define LOGV(FMT, ...) __android_log_print(ANDROID_LOG_VERBOSE, LOG_TAG, "[%d*%s:%d:%s]:" FMT,	\
-							gettid(), basename(__FILE__), __LINE__, __FUNCTION__, ## __VA_ARGS__)
+							gettid(), basename(__FILE__), __LINE__, __FUNCTION__, ##__VA_ARGS__)
 	#define LOGD(FMT, ...) __android_log_print(ANDROID_LOG_DEBUG, LOG_TAG, "[%d*%s:%d:%s]:" FMT,	\
-							gettid(), basename(__FILE__), __LINE__, __FUNCTION__, ## __VA_ARGS__)
+							gettid(), basename(__FILE__), __LINE__, __FUNCTION__, ##__VA_ARGS__)
 	#define LOGI(FMT, ...) __android_log_print(ANDROID_LOG_INFO, LOG_TAG, "[%d*%s:%d:%s]:" FMT,	\
-							gettid(), basename(__FILE__), __LINE__, __FUNCTION__, ## __VA_ARGS__)
+							gettid(), basename(__FILE__), __LINE__, __FUNCTION__, ##__VA_ARGS__)
 	#define LOGW(FMT, ...) __android_log_print(ANDROID_LOG_WARN, LOG_TAG, "[%d*%s:%d:%s]:" FMT,	\
-							gettid(), basename(__FILE__), __LINE__, __FUNCTION__, ## __VA_ARGS__)
+							gettid(), basename(__FILE__), __LINE__, __FUNCTION__, ##__VA_ARGS__)
 	#define LOGE(FMT, ...) __android_log_print(ANDROID_LOG_ERROR, LOG_TAG, "[%d*%s:%d:%s]:" FMT,	\
-							gettid(), basename(__FILE__), __LINE__, __FUNCTION__, ## __VA_ARGS__)
+							gettid(), basename(__FILE__), __LINE__, __FUNCTION__, ##__VA_ARGS__)
 	#define LOGF(FMT, ...) __android_log_print(ANDROID_LOG_FATAL, LOG_TAG, "[%d*%s:%d:%s]:" FMT,	\
-							gettid(), basename(__FILE__), __LINE__, __FUNCTION__, ## __VA_ARGS__)
+							gettid(), basename(__FILE__), __LINE__, __FUNCTION__, ##__VA_ARGS__)
 	#define LOGV_IF(cond, ...) \
 		( (CONDITION(cond)) \
 			? LOGV(__VA_ARGS__) \
@@ -100,7 +100,7 @@
 #else
 	#if defined(USE_LOGV) && defined(__ANDROID__) && !defined(LOG_NDEBUG)
 		#define LOGV(FMT, ...) __android_log_print(ANDROID_LOG_VERBOSE, LOG_TAG, "[%d*%s:%d:%s]:" FMT,	\
-         	 	 	 	 	 	 gettid(), basename(__FILE__), __LINE__, __FUNCTION__, ## __VA_ARGS__)
+         	 	 	 	 	 	 gettid(), basename(__FILE__), __LINE__, __FUNCTION__, ##__VA_ARGS__)
 		#define LOGV_IF(cond, ...) \
 			( (CONDITION(cond)) \
 			? LOGV(__VA_ARGS__) \
@@ -111,7 +111,7 @@
 	#endif
 	#if defined(USE_LOGD) && defined(__ANDROID__) && !defined(LOG_NDEBUG)
 		#define LOGD(FMT, ...) __android_log_print(ANDROID_LOG_DEBUG, LOG_TAG, "[%d*%s:%d:%s]:" FMT,	\
-         	 	 	 	 	 	 gettid(), basename(__FILE__), __LINE__, __FUNCTION__, ## __VA_ARGS__)
+         	 	 	 	 	 	 gettid(), basename(__FILE__), __LINE__, __FUNCTION__, ##__VA_ARGS__)
 		#define LOGD_IF(cond, ...) \
 			( (CONDITION(cond)) \
 			? LOGD(__VA_ARGS__) \
@@ -122,7 +122,7 @@
 	#endif
 	#if defined(USE_LOGI) && defined(__ANDROID__)
 		#define LOGI(FMT, ...) __android_log_print(ANDROID_LOG_INFO, LOG_TAG, "[%d*%s:%d:%s]:" FMT,	\
-         	 	 	 	 	 	 gettid(), basename(__FILE__), __LINE__, __FUNCTION__, ## __VA_ARGS__)
+         	 	 	 	 	 	 gettid(), basename(__FILE__), __LINE__, __FUNCTION__, ##__VA_ARGS__)
 		#define LOGI_IF(cond, ...) \
 			( (CONDITION(cond)) \
 			? LOGI(__VA_ARGS__) \
@@ -133,7 +133,7 @@
 	#endif
 	#if defined(USE_LOGW) && defined(__ANDROID__)
 		#define LOGW(FMT, ...) __android_log_print(ANDROID_LOG_WARN, LOG_TAG, "[%d*%s:%d:%s]:" FMT,	\
-         	 	 	 	 	 	 gettid(), basename(__FILE__), __LINE__, __FUNCTION__, ## __VA_ARGS__)
+         	 	 	 	 	 	 gettid(), basename(__FILE__), __LINE__, __FUNCTION__, ##__VA_ARGS__)
 		#define LOGW_IF(cond, ...) \
 			( (CONDITION(cond)) \
 			? LOGW(__VA_ARGS__) \
@@ -144,7 +144,7 @@
 	#endif
 	#if defined(USE_LOGE) && defined(__ANDROID__)
 		#define LOGE(FMT, ...) __android_log_print(ANDROID_LOG_ERROR, LOG_TAG, "[%d*%s:%d:%s]:" FMT,	\
-         	 	 	 	 	 	 gettid(), basename(__FILE__), __LINE__, __FUNCTION__, ## __VA_ARGS__)
+         	 	 	 	 	 	 gettid(), basename(__FILE__), __LINE__, __FUNCTION__, ##__VA_ARGS__)
 		#define LOGE_IF(cond, ...) \
 			( (CONDITION(cond)) \
 			? LOGE(__VA_ARGS__) \
@@ -155,7 +155,7 @@
 	#endif
 	#if defined(USE_LOGF) && defined(__ANDROID__)
 		#define LOGF(FMT, ...) __android_log_print(ANDROID_LOG_FATAL, LOG_TAG, "[%d*%s:%d:%s]:" FMT,	\
-         	 	 	 	 	 	 gettid(), basename(__FILE__), __LINE__, __FUNCTION__, ## __VA_ARGS__)
+         	 	 	 	 	 	 gettid(), basename(__FILE__), __LINE__, __FUNCTION__, ##__VA_ARGS__)
 		#define LOGF_IF(cond, ...) \
 			( (CONDITION(cond)) \
 			? LOGF(__VA_ARGS__) \
@@ -169,17 +169,17 @@
 #ifndef		LOG_ALWAYS_FATAL_IF
 #define		LOG_ALWAYS_FATAL_IF(cond, ...) \
 				( (CONDITION(cond)) \
-				? ((void)__android_log_assert(#cond, LOG_TAG, ## __VA_ARGS__)) \
+				? ((void)__android_log_assert(#cond, LOG_TAG, ##__VA_ARGS__)) \
 				: (void)0 )
 #endif
 
 #ifndef		LOG_ALWAYS_FATAL
 #define		LOG_ALWAYS_FATAL(...) \
-				( ((void)__android_log_assert(NULL, LOG_TAG, ## __VA_ARGS__)) )
+				( ((void)__android_log_assert(NULL, LOG_TAG, ##__VA_ARGS__)) )
 #endif
 
 #ifndef		LOG_ASSERT
-#define		LOG_ASSERT(cond, ...) LOG_FATAL_IF(!(cond), ## __VA_ARGS__)
+#define		LOG_ASSERT(cond, ...) LOG_FATAL_IF(!(cond), ##__VA_ARGS__)
 #endif
 
 #ifdef LOG_NDEBUG
@@ -194,7 +194,7 @@
 #else
 
 #ifndef		LOG_FATAL_IF
-#define		LOG_FATAL_IF(cond, ...) LOG_ALWAYS_FATAL_IF(cond, ## __VA_ARGS__)
+#define		LOG_FATAL_IF(cond, ...) LOG_ALWAYS_FATAL_IF(cond, ##__VA_ARGS__)
 #endif
 #ifndef		LOG_FATAL
 #define		LOG_FATAL(...) LOG_ALWAYS_FATAL(__VA_ARGS__)
@@ -210,7 +210,7 @@
 
 #if defined(__ANDROID__) && (defined(USE_LOGALL) || defined(USE_LOGI)) && !defined(LOG_NDEBUG)
 #define MARK(FMT, ...) __android_log_print(ANDROID_LOG_INFO, LOG_TAG, "[%s:%d:%s]:" FMT,	\
-						basename(__FILE__), __LINE__, __FUNCTION__, ## __VA_ARGS__)
+						basename(__FILE__), __LINE__, __FUNCTION__, ##__VA_ARGS__)
 #else
 #define		MARK(...)
 #endif
