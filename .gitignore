@@ -1,1 +1,33 @@
 /build
+prebuilt
+obj
+
+# lib.so
+*.so
+
+# libjpeg-turbo
+src/main/jni/libjpeg-turbo/CMakeCache.txt
+src/main/jni/libjpeg-turbo/CMakeFiles/
+src/main/jni/libjpeg-turbo/CTestTestfile.cmake
+src/main/jni/libjpeg-turbo/Makefile
+src/main/jni/libjpeg-turbo/cmake_install.cmake
+src/main/jni/libjpeg-turbo/cmake_uninstall.cmake
+src/main/jni/libjpeg-turbo/croptest
+src/main/jni/libjpeg-turbo/jconfig.h
+src/main/jni/libjpeg-turbo/jconfigint.h
+src/main/jni/libjpeg-turbo/jversion.h
+src/main/jni/libjpeg-turbo/libjpeg.map
+src/main/jni/libjpeg-turbo/libturbojpeg.a
+src/main/jni/libjpeg-turbo/md5/CMakeFiles/
+src/main/jni/libjpeg-turbo/md5/Makefile
+src/main/jni/libjpeg-turbo/md5/cmake_install.cmake
+src/main/jni/libjpeg-turbo/pkgscripts/
+src/main/jni/libjpeg-turbo/sharedlib/CMakeFiles/
+src/main/jni/libjpeg-turbo/sharedlib/Makefile
+src/main/jni/libjpeg-turbo/sharedlib/cmake_install.cmake
+src/main/jni/libjpeg-turbo/simd/CMakeFiles/
+src/main/jni/libjpeg-turbo/simd/Makefile
+src/main/jni/libjpeg-turbo/simd/arm/neon-compat.h
+src/main/jni/libjpeg-turbo/simd/cmake_install.cmake
+src/main/jni/libjpeg-turbo/tjbenchtest
+src/main/jni/libjpeg-turbo/tjexampletest
