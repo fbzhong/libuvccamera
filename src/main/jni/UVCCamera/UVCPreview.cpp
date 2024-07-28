@@ -81,7 +81,7 @@ UVCPreview::UVCPreview(uvc_device_handle_t *devh)
 //
 	pthread_cond_init(&capture_sync, NULL);
 	pthread_mutex_init(&capture_mutex, NULL);
-//	
+//
 	pthread_mutex_init(&pool_mutex, NULL);
 
 	pthread_cond_init(&decoder_sync, NULL);
@@ -197,7 +197,7 @@ void UVCPreview::clear_pool() {
 // Set preview parameters
 int UVCPreview::setPreviewSize(int width, int height, int cameraAngle, int min_fps, int max_fps, int mode) {
 	ENTER();
-	
+
 	int result = 0;
 	if ((requestWidth != width) || (requestHeight != height) || (frameFormat != mode)) {
 		requestWidth = width;
@@ -210,6 +210,7 @@ int UVCPreview::setPreviewSize(int width, int height, int cameraAngle, int min_f
 
 		result = uvc_get_stream_ctrl_format_size_fps(mDeviceHandle, &ctrl, getUvcFrameFormat(mode),
 			requestWidth, requestHeight, requestMinFps, requestMaxFps);
+		LOGW("setPreviewSize: result=%d, size=%dx%d, fps=[%d,%d], mode=%d", result, requestWidth, requestHeight, requestMinFps, requestMaxFps, mode);
 	}
 
 	// Calculate the angle at which the image frame needs to be rotated based on the camera angle
@@ -218,7 +219,7 @@ int UVCPreview::setPreviewSize(int width, int height, int cameraAngle, int min_f
 	if( (frameHorizontalMirror || frameVerticalMirror || frameRotationAngle) && !rotateImage) {
 		rotateImage = new RotateImage();
 	}
-	
+
 	RETURN(result, int);
 }
 
@@ -271,7 +272,7 @@ int UVCPreview::setPreviewDisplay(ANativeWindow *preview_window) {
 
 // Set frame callback
 int UVCPreview::setFrameCallback(JNIEnv *env, jobject frame_callback_obj, int pixel_format) {
-	
+
 	ENTER();
 	pthread_mutex_lock(&capture_mutex);
 	{
@@ -940,11 +941,11 @@ void UVCPreview::do_capture(JNIEnv *env) {
 // Execute capture idle loop
 void UVCPreview::do_capture_idle_loop(JNIEnv *env) {
 	ENTER();
-	
+
 	for (; isRunning() && isCapturing() ;) {
 		do_capture_callback(env, waitCaptureFrame());
 	}
-	
+
 	EXIT();
 }
 
