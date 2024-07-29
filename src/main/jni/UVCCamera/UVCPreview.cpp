@@ -415,7 +415,7 @@ int UVCPreview::stopPreview() {
         mPreviewConvertFunc = nullptr;
 		pthread_cond_signal(&preview_sync);
 		pthread_cond_signal(&capture_sync);
-		if (mIsCapturing && pthread_join(capture_thread, NULL) != EXIT_SUCCESS) {
+		if (pthread_join(capture_thread, NULL) != EXIT_SUCCESS) {
 			LOGW("UVCPreview::terminate capture thread: pthread_join failed");
 		}
 		if (pthread_join(preview_thread, NULL) != EXIT_SUCCESS) {
@@ -631,7 +631,7 @@ void UVCPreview::do_preview(uvc_stream_ctrl_t *ctrl) {
 
 	if (LIKELY(!result)) {
 		clearPreviewFrame();
-		pthread_create(&capture_thread, NULL, capture_thread_func, (void *) this);
+        pthread_create(&capture_thread, NULL, capture_thread_func, (void *) this);
 
 #if LOCAL_DEBUG
 		LOGI("Streaming...");

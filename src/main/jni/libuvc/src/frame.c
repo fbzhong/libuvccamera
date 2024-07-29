@@ -499,7 +499,7 @@ uvc_error_t uvc_any2rgbx(uvc_frame_t *in, uvc_frame_t *out) {
         case UVC_FRAME_FORMAT_RGBA:
             return uvc_duplicate_frame(in, out);
         default:
-            LOGD("uvc_any2rgbx: frame format=%d not supported", in->frame_format);
+            LOGW("frame format=%d to RGBX is not supported", in->frame_format);
             return UVC_ERROR_NOT_SUPPORTED;
     }
 }
