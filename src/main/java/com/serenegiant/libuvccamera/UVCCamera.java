@@ -47,7 +47,7 @@ public class UVCCamera {
     public static final int FRAME_FORMAT_H264 = 2;
     public static final int DEFAULT_PREVIEW_WIDTH = 640;
     public static final int DEFAULT_PREVIEW_HEIGHT = 480;
-    public static final int DEFAULT_PREVIEW_MODE = FRAME_FORMAT_YUYV;
+    public static final int DEFAULT_PREVIEW_MODE = FRAME_FORMAT_MJPEG;
     public static final int DEFAULT_PREVIEW_MIN_FPS = 1;
     public static final int DEFAULT_PREVIEW_MAX_FPS = 30;
     public static final int DEFAULT_CAMERA_ANGLE = 0;
@@ -674,19 +674,18 @@ public class UVCCamera {
             throw new IllegalArgumentException("invalid cameraAngle");
         }
 
-        int result = 0;
         if (mNativePtr != 0) {
-            result = nativeSetPreviewSize(mNativePtr, width, height, cameraAngle, min_fps, max_fps, frameFormat);
+            final int result = nativeSetPreviewSize(mNativePtr, width, height, cameraAngle, min_fps, max_fps, frameFormat);
             if (result != 0) {
                 Log.d(TAG, "setPreviewSize: Failed to set preview size, result=" + result);
-                throw new IllegalArgumentException("Failed to set preview size");
+                return result;
             }
             mCurrentFrameFormat = frameFormat;
             mCurrentWidth = width;
             mCurrentHeight = height;
             mCameraAngle = cameraAngle;
         }
-        return result;
+        return 0;
     }
 
     public List<Size> getSupportedSizeList() {
