@@ -278,6 +278,15 @@ uvc_error_t uvc_query_stream_ctrl(
         ctrl->dwMaxVideoFrameSize = frame->dwMaxVideoFrameBufferSize;
       }
     }
+
+    // https://github.com/libuvc/libuvc/pull/277
+    if (ctrl->dwMaxPayloadTransferSize == 0) {
+      uvc_frame_desc_t *frame = uvc_find_frame_desc(devh, ctrl->bFormatIndex, ctrl->bFrameIndex);
+
+      if (frame) {
+        ctrl->dwMaxPayloadTransferSize = frame->dwMaxBitRate;
+      }
+    }
   }
 
   return UVC_SUCCESS;
@@ -581,23 +590,53 @@ uvc_error_t uvc_get_still_ctrl_format_size(
         still_ctrl->bFormatIndex = format->bFormatIndex;
         still_ctrl->bFrameIndex = sizePattern->bResolutionIndex;
         still_ctrl->bCompressionIndex = 0; //TODO support compression index
-        goto found;
+        goto found_w_h;
       }
     }
   }
 
   return UVC_ERROR_INVALID_MODE;
 
+  // https://github.com/libuvc/libuvc/pull/281
+  found_w_h:
+  // only change dwMaxVideoFrameSize if still size is bigger than stream
+  if ((width > format->frame_descs->wWidth) && (height > format->frame_descs->wHeight))
+  {
+    DL_FOREACH(devh->info->stream_ifs, stream_if)
+    {
+      uvc_format_desc_t *format;
+
+      DL_FOREACH(stream_if->format_descs, format)
+      {
+        uvc_frame_desc_t *frame;
+
+        if (ctrl->bFormatIndex != format->bFormatIndex)
+          continue;
+
+        DL_FOREACH(format->frame_descs, frame)
+        {
+          if (frame->wWidth == width || frame->wHeight == height)
+          {
+            ctrl->dwMaxVideoFrameSize = frame->dwMaxVideoFrameBufferSize;
+            goto found;
+          }
+        }
+      }
+    }
+
+    return UVC_ERROR_INVALID_MODE;
+  }
+
   found:
-    return uvc_probe_still_ctrl(devh, still_ctrl);
+  return uvc_probe_still_ctrl(devh, still_ctrl);
 }
 
 static int _uvc_stream_params_negotiated(
   uvc_stream_ctrl_t *required,
   uvc_stream_ctrl_t *actual) {
+    // https://github.com/libuvc/libuvc/issues/282
     return required->bFormatIndex == actual->bFormatIndex &&
-    required->bFrameIndex == actual->bFrameIndex &&
-    required->dwMaxPayloadTransferSize == actual->dwMaxPayloadTransferSize;
+           required->bFrameIndex == actual->bFrameIndex;
 }
 
 /** @internal
@@ -1641,6 +1680,7 @@ static uvc_error_t _uvc_get_stream_ctrl_format(uvc_device_handle_t *devh,
                     ctrl->bFormatIndex = format->bFormatIndex;
                     ctrl->bFrameIndex = frame->bFrameIndex;
                     ctrl->dwFrameInterval = *interval;
+                    LOGV("found! fps:%d, maxFpsFound:%d, min_fps:%d, max_fps:%d", fps, maxFpsFound, min_fps, max_fps);
                     goto found;
                 }
             }
@@ -1658,6 +1698,7 @@ static uvc_error_t _uvc_get_stream_ctrl_format(uvc_device_handle_t *devh,
                     ctrl->bFormatIndex = format->bFormatIndex;
                     ctrl->bFrameIndex = frame->bFrameIndex;
                     ctrl->dwFrameInterval = interval_100ns;
+                    LOGV("found! fps:%d", fps);
                     goto found;
                 }
             }

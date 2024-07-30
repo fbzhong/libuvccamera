@@ -1060,12 +1060,13 @@ uvc_error_t uvc_scan_control(uvc_device_handle_t *devh, uvc_device_info_t *info)
 
   uvc_device_descriptor_t* dev_desc;
   int haveTISCamera = 0;
-  get_device_descriptor ( devh, &dev_desc );
-  if ( 0x199e == dev_desc->idVendor && ( 0x8101 == dev_desc->idProduct ||
-      0x8102 == dev_desc->idProduct )) {
-    haveTISCamera = 1;
+  if ( get_device_descriptor ( devh, &dev_desc ) == UVC_SUCCESS) {
+    if ( 0x199e == dev_desc->idVendor && ( 0x8101 == dev_desc->idProduct ||
+        0x8102 == dev_desc->idProduct )) {
+      haveTISCamera = 1;
+    }
+    uvc_free_device_descriptor ( dev_desc );
   }
-  uvc_free_device_descriptor ( dev_desc );
 
   for (interface_idx = 0; interface_idx < info->config->bNumInterfaces; ++interface_idx) {
     if_desc = &info->config->interface[interface_idx].altsetting[0];
@@ -1843,12 +1844,12 @@ void uvc_process_control_status(uvc_device_handle_t *devh, unsigned char *data, 
                     content, content_len,
                     devh->status_user_ptr);
   }
-  
+
   UVC_EXIT_VOID();
 }
 
 void uvc_process_streaming_status(uvc_device_handle_t *devh, unsigned char *data, int len) {
-  
+
   UVC_ENTER();
 
   if (len < 3) {
@@ -1864,7 +1865,7 @@ void uvc_process_streaming_status(uvc_device_handle_t *devh, unsigned char *data
       return;
     }
     UVC_DEBUG("Button (intf %u) %s len %d\n", data[1], data[3] ? "pressed" : "released", len);
-    
+
     if(devh->button_cb) {
       UVC_DEBUG("Running user-supplied button callback");
       devh->button_cb(data[1],
@@ -1879,7 +1880,7 @@ void uvc_process_streaming_status(uvc_device_handle_t *devh, unsigned char *data
 }
 
 void uvc_process_status_xfer(uvc_device_handle_t *devh, struct libusb_transfer *transfer) {
-  
+
   UVC_ENTER();
 
   /* printf("Got transfer of aLen = %d\n", transfer->actual_length); */
