@@ -239,3 +239,67 @@ void RotateImage::verticalMirrorYuyv(void *_mirrorYuyv, void *_yuyv, uint32_t wi
         yuyv -= lineDataSize;
     }
 }
+
+
+void RotateImage::rotate_rgbx8888(uvc_frame_t *src_frame, int angle) {
+    ENTER();
+
+    int PIXEL_SIZE = 4;
+
+    SpaceSizeProcessing(src_frame);
+
+    rotateRgb((unsigned char*)rotate_data, (const unsigned char*)(src_frame->data), src_frame->width, src_frame->height, angle, PIXEL_SIZE);
+
+    void * temp = src_frame->data;
+    src_frame->data = rotate_data;
+    rotate_data = temp;
+
+    // LOGW("rotate_rgbx8888 angle=%d, width=%d, height=%d, step=%zu", angle, src_frame->width, src_frame->height, src_frame->step);
+    if (angle == 90 || angle == 270) {
+        uint32_t switchTemp = src_frame->width;
+        src_frame->width = src_frame->height;
+        src_frame->height = switchTemp;
+        src_frame->step = src_frame->width * PIXEL_SIZE;
+    }
+    // LOGW("rotate_rgbx8888: rotated angle=%d, width=%d, height=%d, step=%zu", angle, src_frame->width, src_frame->height, src_frame->step);
+}
+
+void RotateImage::rotateRgb(unsigned char* output, const unsigned char* input, int width, int height, int angle, int pixelSize) {
+    int x, y;
+    int newWidth, newHeight;
+
+    if (angle == 90 || angle == 270) {
+        newWidth = height;
+        newHeight = width;
+    } else {
+        newWidth = width;
+        newHeight = height;
+    }
+
+    for (y = 0; y < height; y++) {
+        for (x = 0; x < width; x++) {
+            int srcOffset = (y * width + x) * pixelSize;
+            int dstOffset;
+
+            switch (angle) {
+                case 90:
+                    dstOffset = ((newWidth - 1 - y) + newWidth * x) * pixelSize;
+                    break;
+                case 180:
+                    dstOffset = ((newHeight - 1 - y) * newWidth + (newWidth - 1 - x)) * pixelSize;
+                    break;
+                case 270:
+                    dstOffset = (y + (newHeight - 1 - x) * newWidth) * pixelSize;
+                    break;
+                default:
+                    // Invalid angle, just copy the input to output
+                    memcpy(output, input, width * height * pixelSize);
+                    return;
+            }
+
+            for (int i = 0; i < pixelSize; i++) {
+                output[dstOffset + i] = input[srcOffset + i];
+            }
+        }
+    }
+}

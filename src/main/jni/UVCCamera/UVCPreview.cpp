@@ -215,9 +215,9 @@ int UVCPreview::setPreviewSize(int width, int height, int cameraAngle, int min_f
 
 	// Calculate the angle at which the image frame needs to be rotated based on the camera angle
 	frameRotationAngle = (360 - cameraAngle) % 360;
-	LOGW("frameRotationAngle:%d",frameRotationAngle);
 	if( (frameHorizontalMirror || frameVerticalMirror || frameRotationAngle) && !rotateImage) {
 		rotateImage = new RotateImage();
+		LOGW("frameRotationAngle:%d, rotateImage:%p",frameRotationAngle, rotateImage);
 	}
 
 	RETURN(result, int);
@@ -656,23 +656,41 @@ void UVCPreview::do_preview(uvc_stream_ctrl_t *ctrl) {
 					}
 					recycle_frame(frame);
 				} else {
-					if (rotateImage && frame->frame_format == UVC_FRAME_FORMAT_YUYV) {
-						if (frameRotationAngle == 90) {
-							rotateImage->rotate_yuyv_90(frame);
-						} else if (frameRotationAngle == 180) {
-							rotateImage->rotate_yuyv_180(frame);
-						} else if (frameRotationAngle == 270) {
-							rotateImage->rotate_yuyv_270(frame);
-						}
-						if (frameHorizontalMirror) {
-							rotateImage->horizontal_mirror_yuyv(frame);
-						}
-						if (frameVerticalMirror) {
-							rotateImage->vertical_mirror_yuyv(frame);
+					// LOGW("frameRotationAngle:%d, rotateImage:%p, frame->frame_format:%d, UVC_FRAME_FORMAT_RGBX=%d, UVC_FRAME_FORMAT_RGBA=%d", frameRotationAngle, rotateImage, frame->frame_format, UVC_FRAME_FORMAT_RGBX, UVC_FRAME_FORMAT_RGBA);
+					if (!mPreviewConvertFunc) mPreviewConvertFunc = getConvertFunc(frame, previewFormat);
+					if (mPreviewConvertFunc) {
+						converted = get_frame(frame->width * frame->height * previewFormatPixelBytes);
+						if (LIKELY(converted)) {
+							int b = mPreviewConvertFunc(frame, converted);
+							if (b) {
+								LOGE("failed converting frame->frame_format:%d to previewFormat:%d, result:%d", frame->frame_format, previewFormat, b);
+							}
+							recycle_frame(frame);
+							frame = converted;
 						}
 					}
-					if (!mPreviewConvertFunc) mPreviewConvertFunc = getConvertFunc(frame, previewFormat);
-					converted = draw_preview_one(frame, &mPreviewWindow, mPreviewConvertFunc, previewFormatPixelBytes);
+					if (rotateImage) {
+						if (frame->frame_format == UVC_FRAME_FORMAT_YUYV) {
+							if (frameRotationAngle == 90) {
+								rotateImage->rotate_yuyv_90(frame);
+							} else if (frameRotationAngle == 180) {
+								rotateImage->rotate_yuyv_180(frame);
+							} else if (frameRotationAngle == 270) {
+								rotateImage->rotate_yuyv_270(frame);
+							}
+							if (frameHorizontalMirror) {
+								rotateImage->horizontal_mirror_yuyv(frame);
+							}
+							if (frameVerticalMirror) {
+								rotateImage->vertical_mirror_yuyv(frame);
+							}
+						} else if (frame->frame_format == UVC_FRAME_FORMAT_RGBX || frame->frame_format == UVC_FRAME_FORMAT_RGBA) {
+							if (frameRotationAngle) {
+								rotateImage->rotate_rgbx8888(frame, frameRotationAngle);
+							}
+						}
+					}
+					converted = draw_preview_one(frame, &mPreviewWindow, NULL, previewFormatPixelBytes);
 					addCaptureFrame(converted);
 				}
 				framesCounter++;

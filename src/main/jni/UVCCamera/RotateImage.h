@@ -39,6 +39,9 @@ public:
     // vertical mirror
     void vertical_mirror_yuyv(uvc_frame_t *src_frame);
     void verticalMirrorYuyv(void *_mirrorYuyv, void *_yuyv, uint32_t width, uint32_t height);
+
+    void rotate_rgbx8888(uvc_frame_t *src_frame, int angle);
+    void rotateRgb(unsigned char *output, const unsigned char *input, int width, int height, int angle, int pixelSize);
 };
 
 #endif
