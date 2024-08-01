@@ -40,8 +40,6 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.util.SparseArray;
 
-import com.serenegiant.libuvccamera.USBVendorId;
-
 import java.lang.ref.WeakReference;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -851,18 +849,22 @@ public final class LibUVCCameraUSBMonitor {
             @Override
             public void run() {
                 if (DEBUG) Log.v(TAG, "processConnect:device=" + device);
-                UsbControlBlock ctrlBlock;
-                final boolean createNew;
-                ctrlBlock = mCtrlBlocks.get(device);
-                if (ctrlBlock == null) {
-                    ctrlBlock = new UsbControlBlock(LibUVCCameraUSBMonitor.this, device);
-                    mCtrlBlocks.put(device, ctrlBlock);
-                    createNew = true;
-                } else {
-                    createNew = false;
-                }
-                if (mOnDeviceConnectListener != null) {
-                    mOnDeviceConnectListener.onConnect(device, ctrlBlock, createNew);
+                try {
+                    UsbControlBlock ctrlBlock;
+                    final boolean createNew;
+                    ctrlBlock = mCtrlBlocks.get(device);
+                    if (ctrlBlock == null) {
+                        ctrlBlock = new UsbControlBlock(LibUVCCameraUSBMonitor.this, device);
+                        mCtrlBlocks.put(device, ctrlBlock);
+                        createNew = true;
+                    } else {
+                        createNew = false;
+                    }
+                    if (mOnDeviceConnectListener != null) {
+                        mOnDeviceConnectListener.onConnect(device, ctrlBlock, createNew);
+                    }
+                } catch (final Exception e) {
+                    Log.e(TAG, "processConnect:", e);
                 }
             }
         });
