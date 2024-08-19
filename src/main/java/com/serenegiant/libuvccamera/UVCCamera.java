@@ -731,7 +731,7 @@ public class UVCCamera {
      *
      * @param texture
      */
-    public synchronized void setPreviewTexture(final SurfaceTexture texture) {
+    public synchronized void setPreviewDisplay(final SurfaceTexture texture) {
         if (!isLoaded) return;
         if (texture == null) {
             nativeSetPreviewDisplay(mNativePtr, null);
@@ -1430,26 +1430,14 @@ public class UVCCamera {
     private native int nativeConnect(long id_camera, int venderId, int productId, int fileDescriptor, String usbfs);
 
     /**
-     * start movie capturing(this should call while previewing)
+     * set movie capturing (this should call while previewing)
      *
      * @param surface
      */
-    public void startCapture(final Surface surface) {
-        if (!isLoaded) return;
-        if (mCtrlBlock != null && surface != null) {
-            nativeSetCaptureDisplay(mNativePtr, surface);
-        } else {
-            throw new NullPointerException("startCapture");
-        }
-    }
-
-    /**
-     * stop movie capturing
-     */
-    public void stopCapture() {
+    public void setCaptureDisplay(final Surface surface) {
         if (!isLoaded) return;
         if (mCtrlBlock != null) {
-            nativeSetCaptureDisplay(mNativePtr, null);
+            nativeSetCaptureDisplay(mNativePtr, surface);
         }
     }
 
